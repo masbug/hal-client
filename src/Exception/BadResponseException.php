@@ -11,13 +11,24 @@ class BadResponseException extends \RuntimeException implements ExceptionInterfa
 {
     private RequestInterface $request;
     private ResponseInterface $response;
-    private HalResource|ResponseInterface $resource;
+    /**
+     * @var HalResource|ResponseInterface
+     */
+    private $resource;
 
+    /**
+     * BadResponseException constructor.
+     * @param string                        $message
+     * @param RequestInterface              $request
+     * @param ResponseInterface             $response
+     * @param HalResource|ResponseInterface $resource
+     * @param Throwable|null                $previous
+     */
     public function __construct(
         string $message,
         RequestInterface $request,
         ResponseInterface $response,
-        HalResource|ResponseInterface $resource,
+        $resource,
         ?Throwable $previous = null
     ) {
         $code = $response->getStatusCode();
@@ -28,10 +39,18 @@ class BadResponseException extends \RuntimeException implements ExceptionInterfa
         $this->resource = $resource;
     }
 
+    /**
+     * @param RequestInterface              $request
+     * @param ResponseInterface             $response
+     * @param HalResource|ResponseInterface $resource
+     * @param Throwable|null                $previous
+     * @param string|null                   $message
+     * @return static
+     */
     public static function create(
         RequestInterface $request,
         ResponseInterface $response,
-        HalResource|ResponseInterface $resource,
+        $resource,
         ?Throwable $previous = null,
         ?string $message = null
     ) : self {
@@ -75,7 +94,10 @@ class BadResponseException extends \RuntimeException implements ExceptionInterfa
         return $this->response;
     }
 
-    public function getResource() : HalResource|ResponseInterface
+    /**
+     * @return HalResource|ResponseInterface
+     */
+    public function getResource()
     {
         return $this->resource;
     }

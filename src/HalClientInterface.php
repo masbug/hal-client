@@ -12,23 +12,46 @@ interface HalClientInterface
     public function getHeader(string $name) : array;
 
     /** @param string|string[] $value */
-    public function withHeader(string $name, string|array $value) : HalClientInterface;
+    public function withHeader(string $name, $value) : HalClientInterface;
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function root(array $options = []) : HalResource|ResponseInterface;
-
-    public function get(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface;
-
-    public function post(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface;
-
-    public function put(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface;
-
-    public function delete(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface;
+    public function root(array $options = []);
 
     /**
+     * @param UriInterface|string $uri
+     * @param array               $options
+     * @return HalResource|ResponseInterface
+     */
+    public function get($uri, array $options = []);
+
+    /**
+     * @param UriInterface|string $uri
+     * @param array               $options
+     * @return HalResource|ResponseInterface
+     */
+    public function post($uri, array $options = []);
+
+    /**
+     * @param UriInterface|string $uri
+     * @param array               $options
+     * @return HalResource|ResponseInterface
+     */
+    public function put($uri, array $options = []);
+
+    /**
+     * @param UriInterface|string $uri
+     * @param array               $options
+     * @return HalResource|ResponseInterface
+     */
+    public function delete($uri, array $options = []);
+
+    /**
+     * @param UriInterface|string $uri
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function request(string $method, string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface;
+    public function request(string $method, $uri, array $options = []);
 }

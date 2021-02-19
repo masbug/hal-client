@@ -121,40 +121,45 @@ final class HalLink
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function get(array $variables = [], array $options = []) : HalResource|ResponseInterface
+    public function get(array $variables = [], array $options = [])
     {
         return $this->request('GET', $variables, $options);
     }
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function post(array $variables = [], array $options = []) : HalResource|ResponseInterface
+    public function post(array $variables = [], array $options = [])
     {
         return $this->request('POST', $variables, $options);
     }
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function put(array $variables = [], array $options = []) : HalResource|ResponseInterface
+    public function put(array $variables = [], array $options = [])
     {
         return $this->request('PUT', $variables, $options);
     }
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function delete(array $variables = [], array $options = []) : HalResource|ResponseInterface
+    public function delete(array $variables = [], array $options = [])
     {
         return $this->request('DELETE', $variables, $options);
     }
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function request(string $method, array $variables = [], array $options = []) : HalResource|ResponseInterface
+    public function request(string $method, array $variables = [], array $options = [])
     {
         return $this->client->request(
             $method,

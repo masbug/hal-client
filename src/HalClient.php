@@ -20,7 +20,12 @@ final class HalClient implements HalClientInterface
         'application/vnd.error+json'
     ];
 
-    public function __construct(string|UriInterface $rootUrl, HttpClientInterface $httpClient = null)
+    /**
+     * HalClient constructor.
+     * @param UriInterface|string      $rootUrl
+     * @param HttpClientInterface|null $httpClient
+     */
+    public function __construct($rootUrl, HttpClientInterface $httpClient = null)
     {
         $this->httpClient = $httpClient ?? self::createDefaultHttpClient();
 
@@ -46,7 +51,11 @@ final class HalClient implements HalClientInterface
         return $this->defaultRequest->getUri();
     }
 
-    public function withRootUrl(string|UriInterface $rootUrl) : self
+    /**
+     * @param UriInterface|string $rootUrl
+     * @return $this
+     */
+    public function withRootUrl($rootUrl) : self
     {
         $instance = clone $this;
 
@@ -64,7 +73,7 @@ final class HalClient implements HalClientInterface
     }
 
     /** @param string|string[] $value */
-    public function withHeader(string $name, string|array $value) : self
+    public function withHeader(string $name, $value) : self
     {
         $instance = clone $this;
 
@@ -78,52 +87,68 @@ final class HalClient implements HalClientInterface
 
     /**
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     * @return HalResource|ResponseInterface
      * */
-    public function root(array $options = []) : HalResource|ResponseInterface
+    public function root(array $options = [])
     {
         return $this->request('GET', '', $options);
     }
 
     /**
+     * @param string|UriInterface $uri
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     *
+     * @return HalResource|ResponseInterface
      * */
-    public function get(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface
+    public function get($uri, array $options = [])
     {
         return $this->request('GET', $uri, $options);
     }
 
     /**
+     * @param string|UriInterface $uri
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     *
+     * @return HalResource|ResponseInterface
      * */
-    public function post(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface
+    public function post($uri, array $options = [])
     {
         return $this->request('POST', $uri, $options);
     }
 
     /**
+     * @param string|UriInterface $uri
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     *
+     * @return HalResource|ResponseInterface
      * */
-    public function put(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface
+    public function put($uri, array $options = [])
     {
         return $this->request('PUT', $uri, $options);
     }
 
     /**
+     * @param string|UriInterface $uri
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     *
+     * @return HalResource|ResponseInterface
      * */
-    public function delete(string|UriInterface $uri, array $options = []) : HalResource|ResponseInterface
+    public function delete($uri, array $options = [])
     {
         return $this->request('DELETE', $uri, $options);
     }
 
     /**
+     * @param string|UriInterface $uri
      * @param array{version?:string, return_raw_response?:bool, headers?:array<string, string|string[]>, query?:string|array<string, int|string|string[]>, body?:string|array<mixed>} $options
+     *
+     * @return HalResource|ResponseInterface
      * */
     public function request(
         string $method,
-        string|UriInterface $uri,
+        $uri,
         array $options = []
-    ) : HalResource|ResponseInterface {
+    ) {
         $request = $this->createRequest($method, $uri, $options);
 
         try {
@@ -135,9 +160,15 @@ final class HalClient implements HalClientInterface
         return $this->handleResponse($request, $response, $options);
     }
 
+    /**
+     * @param string              $method
+     * @param UriInterface|string $uri
+     * @param array               $options
+     * @return RequestInterface
+     */
     public function createRequest(
         string $method,
-        string|UriInterface $uri,
+        $uri,
         array $options = []
     ) : RequestInterface {
         /** @var \Psr\Http\Message\RequestInterface $request */
@@ -178,7 +209,7 @@ final class HalClient implements HalClientInterface
     }
 
     /** @param string|array<string, string>|array<string, string[]> $query */
-    private function applyQuery(RequestInterface $request, string|array $query) : RequestInterface
+    private function applyQuery(RequestInterface $request, $query) : RequestInterface
     {
         $uri = $request->getUri();
 
@@ -196,7 +227,12 @@ final class HalClient implements HalClientInterface
         );
     }
 
-    private function applyBody(RequestInterface $request, string|array $body) : RequestInterface
+    /**
+     * @param RequestInterface $request
+     * @param array|string     $body
+     * @return RequestInterface
+     */
+    private function applyBody(RequestInterface $request, $body) : RequestInterface
     {
         if (is_array($body)) {
             $body = json_encode($body);
@@ -212,11 +248,17 @@ final class HalClient implements HalClientInterface
         return $request->withBody(GuzzlePsr7\stream_for($body));
     }
 
+    /**
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
+     * @param array             $options
+     * @return HalResource|ResponseInterface
+     */
     private function handleResponse(
         RequestInterface $request,
         ResponseInterface $response,
         array $options
-    ) : HalResource|ResponseInterface {
+    ) {
         $statusCode = $response->getStatusCode();
 
         if ($statusCode >= 200 && $statusCode < 300) {
@@ -268,7 +310,12 @@ final class HalClient implements HalClientInterface
         }
     }
 
-    private static function resolveUri(UriInterface $base, string|UriInterface $rel) : UriInterface
+    /**
+     * @param UriInterface        $base
+     * @param UriInterface|string $rel
+     * @return UriInterface
+     */
+    private static function resolveUri(UriInterface $base, $rel) : UriInterface
     {
         if (!($rel instanceof UriInterface)) {
             $rel = new GuzzlePsr7\Uri($rel);
